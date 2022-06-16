@@ -20,7 +20,7 @@ async def index():
     return {"message": "Fast API"}
 
 @app.get("/clientes/", response_model=List[Cliente])
-async def read_root():
+async def clientes():
     with sqlite3.connect('sql/clientes.sqlite') as connection:
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
@@ -30,7 +30,7 @@ async def read_root():
 
         
 @app.get("/clientes/{id_cliente}", response_model=Cliente)
-async def clientes_parametros(id_cliente: int):
+async def cliente_parametros(id_cliente: int):
     with sqlite3.connect("sql/clientes.sqlite") as connection:
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()

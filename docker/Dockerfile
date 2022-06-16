@@ -19,8 +19,4 @@ RUN pip3 install black==22.3.0
 RUN pip3 install flake8==4.0.1
 RUN pip3 install isort==5.10.1
 RUN pip3 install mypy==0.961
-
-
-ENV requirements /home/requirements.txt
-COPY requirements.txt ${requirements}
-WORKDIR /home/
+RUN pip3 install requests

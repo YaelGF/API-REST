@@ -49,3 +49,9 @@ docker run -it -v $(pwd)/code:/PaginaFastAPI --net host --name fastapy -h python
 $ cd PaginaFastAPI
 $ uvicorn main:app --reload
 ```
+
+
+
+ENV requirements /home/requirements.txt
+COPY requirements.txt ${requirements}
+WORKDIR /home/
