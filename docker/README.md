@@ -50,8 +50,29 @@ $ cd PaginaFastAPI
 $ uvicorn main:app --reload
 ```
 
+## 5. Start docker
 
+```bash
+    $ docker start -i name
+```
 
-ENV requirements /home/requirements.txt
-COPY requirements.txt ${requirements}
-WORKDIR /home/
+## 6. Delete docker
+
+```bash
+    $ docker rm id-docker
+```
+## 7. Delete imagen
+
+```bash
+    $ docker rmi id-imagen
+```
+## 8. Show images
+
+```bash
+    $ docker images
+```
+## 9. Show Dockers
+
+```bash
+    $ docker ps -a
+```

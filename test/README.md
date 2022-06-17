@@ -1,9 +1,6 @@
-pytest -v
-
-cuando esta en  otra carpeta:
-
-python3 -m pytest -v
-
-para poder abrir el unicorn
-
-uvicorn code.main:app --reload 
+# Comando para correr el archivo de pytest
+  
+```bash
+    pytest -v
+```
+nota: estando en la misma ubicación
