@@ -21,7 +21,7 @@ async def index():
 
 @app.get("/clientes/", response_model=List[Cliente])
 async def clientes():
-    with sqlite3.connect('sql/clientes.sqlite') as connection:
+    with sqlite3.connect('code/sql/clientes.sqlite') as connection:
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute('SELECT * FROM clientes')
@@ -31,7 +31,7 @@ async def clientes():
         
 @app.get("/clientes/{id_cliente}", response_model=Cliente)
 async def cliente_parametros(id_cliente: int):
-    with sqlite3.connect("sql/clientes.sqlite") as connection:
+    with sqlite3.connect("code/sql/clientes.sqlite") as connection:
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
         cursor.execute("Select * From clientes where id_cliente = {}".format(id_cliente))
