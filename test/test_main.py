@@ -1,6 +1,7 @@
 from code.main import app
 from fastapi.testclient import TestClient
 import requests
+import json
 
 clientes = TestClient(app)
 
@@ -26,15 +27,15 @@ def test_cliente_parametros():
     assert response.json() == dataCliente
 
 def test_cliente_add():
-    parametros_add = {"nombre":"Hola","email":"new@hotmail.com"}
-    response = clientes.post("/clientes/", json=parametros_add)
+    parametrosAdd = {"nombre":"Hola","email":"new@email.com"}
+    response = clientes.post("/clientes/", params=parametrosAdd)
     dataCliente_add = {"mensaje":"Cliente agregado"}
     assert response.status_code == 200
     assert response.json() == dataCliente_add
 
 def test_cliente_put():
-    parametros = {"nombre":"Update","email":"update@hotmail.com"}
-    response = clientes.put("/clientes/6", json=parametros)
+    parametros = {"nombre":"Ayuda","email":"update@hotmail.com"}
+    response = clientes.put("/clientes/6", params=parametros)
     dataCliente_put = {"mensaje":"Cliente actualizado"}
     assert response.status_code == 200
     assert response.json() == dataCliente_put

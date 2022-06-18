@@ -52,7 +52,7 @@ async def cliente_put(id_cliente: int, nombre:str,email:str):
     with sqlite3.connect("code/sql/clientes.sqlite") as connection:
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
-        cursor.execute("Update clientes set nombre = '{name}', email = '{email}' where id_cliente = {id}".format(name=cliente.nombre,email=cliente.email,id=id_cliente))
+        cursor.execute("Update clientes set nombre = '{name}', email = '{email}' where id_cliente = {id}".format(name=nombre,email=email,id=id_cliente))
         response = cursor.fetchone()
         data = {"mensaje":"Cliente actualizado"}
         return data
