@@ -2,24 +2,17 @@ from typing import Union
 from fastapi import FastAPI
 import sqlite3
 from typing import List
-from pydantic import BaseModel
+from .Schemas import schemas
 
-class Respuesta(BaseModel):
-    mensaje: str
-
-class Cliente(BaseModel):
-    id_cliente: int
-    nombre: str
-    email: str
 
 
 app = FastAPI()
 
-@app.get("/", response_model=Respuesta)
+@app.get("/", response_model=schemas.Respuesta)
 async def index():
-    return {"mensaje": "Fast API"}
+    return {"message": "Fast API"}
 
-@app.get("/clientes/", response_model=List[Cliente])
+@app.get("/clientes/", response_model=List[schemas.Cliente])
 async def clientes(offset:int =0,limit: int = 10):
     with sqlite3.connect('code/sql/clientes.sqlite') as connection:
         connection.row_factory = sqlite3.Row
@@ -28,7 +21,7 @@ async def clientes(offset:int =0,limit: int = 10):
         response = cursor.fetchall()
         return response
 
-@app.get("/clientes/{id_cliente}", response_model=Cliente)
+@app.get("/clientes/{id_cliente}", response_model=schemas.Cliente)
 async def cliente_parametros(id_cliente: int):
     with sqlite3.connect("code/sql/clientes.sqlite") as connection:
         connection.row_factory = sqlite3.Row
@@ -37,7 +30,7 @@ async def cliente_parametros(id_cliente: int):
         response = cursor.fetchone()
         return response
         
-@app.post("/clientes/", response_model=Respuesta)
+@app.post("/clientes/", response_model=schemas.Mensaje)
 async def cliente_add(nombre:str,email:str):
     with sqlite3.connect("code/sql/clientes.sqlite") as connection:
         connection.row_factory = sqlite3.Row
@@ -47,7 +40,7 @@ async def cliente_add(nombre:str,email:str):
         data = {"mensaje":"Cliente agregado"}
         return data
 
-@app.put("/clientes/{id_cliente}", response_model=Respuesta)
+@app.put("/clientes/{id_cliente}", response_model=schemas.Mensaje)
 async def cliente_put(id_cliente: int, nombre:str,email:str):
     with sqlite3.connect("code/sql/clientes.sqlite") as connection:
         connection.row_factory = sqlite3.Row
@@ -57,7 +50,7 @@ async def cliente_put(id_cliente: int, nombre:str,email:str):
         data = {"mensaje":"Cliente actualizado"}
         return data
 
-@app.delete("/clientes/{id_cliente}", response_model=Respuesta)
+@app.delete("/clientes/{id_cliente}", response_model=schemas.Mensaje)
 async def cliente_delete(id_cliente: int):
     with sqlite3.connect("code/sql/clientes.sqlite") as connection:
         connection.row_factory = sqlite3.Row

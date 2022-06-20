@@ -7,7 +7,7 @@ clientes = TestClient(app)
 
 def test_index():
     response = clientes.get("/")
-    data = {"mensaje":"Fast API"}
+    data = {"message":"Fast API"}
     assert response.status_code == 200
     assert response.json() == data
 
