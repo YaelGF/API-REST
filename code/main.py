@@ -2,7 +2,7 @@ from typing import Union
 from fastapi import FastAPI
 from typing import List
 from .Schemas import schemas
-from .Conexion.CRUD import crud
+from .Conexion import crud
 
 app = FastAPI()
 
@@ -10,9 +10,9 @@ app = FastAPI()
 async def index():
     return {"message": "Fast API"}
 
-@app.get("/clientes/", response_model=List[schemas.Cliente])
+@app.get("/clientes/")
 async def clientes(offset:int =0,limit: int = 10):
-    return crud.Read()
+    return crud.Read(limit,offset)
 
 @app.get("/clientes/{id_cliente}", response_model=schemas.Cliente)
 async def cliente_parametros(id_cliente: int):
