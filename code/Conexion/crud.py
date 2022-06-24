@@ -9,7 +9,7 @@ def Create(nombre:str,email:str):
     cursor.execute( "INSERT INTO clientes(nombre, email) values('?','?')",
     (nombre,email))
 
-def Read(limit:int=0,offset:int=10):
+def Read(limit:int=10,offset:int=0):
     with sqlite3.connect('code/sql/clientes.sqlite') as connection:
         connection.row_factory = sqlite3.Row
         cursor = connection.cursor()
