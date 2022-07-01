@@ -1,12 +1,17 @@
 from typing import Union
 from fastapi import Depends, FastAPI, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import sqlite3
 from typing import List
 import hashlib  # importa la libreria hashlib
 
-#Hola
+
+origins = [
+    "http://127.0.0.1:8000"
+]
+
 
 class Respuesta(BaseModel):
     message: str
@@ -31,6 +36,14 @@ class Usuarios(BaseModel):
     level: int
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 security = HTTPBasic()
 
