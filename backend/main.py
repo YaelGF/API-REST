@@ -8,9 +8,6 @@ from typing import List
 import hashlib  # importa la libreria hashlib
 
 
-origins = [
-    "http://127.0.0.1:8000"
-]
 
 
 class Respuesta(BaseModel):
@@ -36,6 +33,12 @@ class Usuarios(BaseModel):
     level: int
 
 app = FastAPI()
+
+origins = [
+    "http://127.0.0.1:8000",
+    "http://0.0.0.0:8080",
+    "http://localhost:8080",
+]
 
 app.add_middleware(
     CORSMiddleware,
@@ -69,7 +72,7 @@ def get_current_level(credentials: HTTPBasicCredentials = Depends(security)):
 async def index():
     return {"message": "Fast API"}
 
-@app.get("/clientes/", response_model=List[Cliente])
+@app.get("/clientes/", response_model=List[Cliente],status_code=status.HTTP_202_ACCEPTED)
 async def clientes(offset:int =0,limit: int = 10,level: int = Depends(get_current_level)):
     if level == 1:
         with sqlite3.connect('backend/sql/clientes.sqlite') as connection:
