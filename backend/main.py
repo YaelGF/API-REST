@@ -78,7 +78,9 @@ async def clientes(offset:int =0,limit: int = 10,level: int = Depends(get_curren
         with sqlite3.connect('backend/sql/clientes.sqlite') as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute('SELECT * FROM clientes  LIMIT {limit}  OFFSET {offset}'.format(offset=offset,limit=limit))
+            cursor.execute(
+                "SELECT * FROM clientes LIMIT ? OFFSET ?",(limit,offset)
+            )
             response = cursor.fetchall()
             return response
     else:
@@ -94,7 +96,9 @@ async def cliente_parametros(id_cliente: int,level: int = Depends(get_current_le
         with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute("SELECT * FROM clientes where id_cliente = {}".format(id_cliente))
+            cursor.execute(
+                "SELECT * FROM clientes WHERE id_cliente = ?",(id_cliente,)
+            )
             response = cursor.fetchone()
             return response
     else:
@@ -110,7 +114,9 @@ async def cliente_add(nombre:str,email:str,level: int = Depends(get_current_leve
         with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute("insert into clientes(nombre,email) values('{nombre}', '{email}')".format(nombre=nombre, email=email))
+            cursor.execute(
+                "INSERT INTO clientes (nombre,email) VALUES (?,?)",(nombre,email)
+            )
             response = cursor.fetchone()
             data = {"mensaje":"Cliente agregado"}
             return data
@@ -128,7 +134,9 @@ async def cliente_put(id_cliente: int, nombre:str,email:str,level: int = Depends
         with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute("Update clientes set nombre = '{name}', email = '{email}' where id_cliente = {id}".format(name=nombre,email=email,id=id_cliente))
+            cursor.execute(
+                "UPDATE clientes SET nombre = ?, email = ? WHERE id_cliente = ?",(nombre,email,id_cliente)
+            )
             response = cursor.fetchone()
             data = {"mensaje":"Cliente actualizado"}
             return data
@@ -146,7 +154,9 @@ async def cliente_delete(id_cliente: int,level: int = Depends(get_current_level)
         with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
-            cursor.execute("Delete from clientes where id_cliente = {}".format(id_cliente))
+            cursor.execute(
+                "DELETE FROM clientes WHERE id_cliente = ?",(id_cliente,)
+            )
             response = cursor.fetchone()
             data = {"mensaje":"Cliente borrado"}
             return data
