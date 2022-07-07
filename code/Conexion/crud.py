@@ -5,32 +5,38 @@ import sqlite3
 
 
 def Create(nombre:str,email:str):
-    cursor = conexion.OpenConexion()
-    cursor.execute( "INSERT INTO clientes(nombre, email) values('?','?')",
-    (nombre,email))
+    cursor = conexion.conectar()
+    cursor.execute( 
+        "INSERT INTO clientes(nombre, email) values('?','?')",
+        (nombre,email)
+    )
 
-def Read(limit:int=10,offset:int=0):
-    with sqlite3.connect('code/sql/clientes.sqlite') as connection:
-        connection.row_factory = sqlite3.Row
-        cursor = connection.cursor()
-        cursor.execute('SELECT * FROM clientes  LIMIT {limit}  OFFSET {offset}'.format(offset=offset,limit=limit))
-        response = cursor.fetchall()
-        return response
+def Read(limit:int=2,offset:int=0):
+    cursor = conexion.conectar()
+    cursor.execute(
+        "SELECT * FROM clientes LIMIT ? OFFSET ?",(limit,offset),
+    )
+    response = cursor.fetchall()
+    return response
 
 def Update(nombre: str, email:str, id_cliente:int):
-    cursor = conexion.OpenConexion()
+    cursor = conexion.conectar()
     cursor.execute( 
         "UPDATE clientes set nombre = '?', email = '?' WHERE id_cliente = ?",
-        (nombre,email,id_cliente),)
+        (nombre,email,id_cliente),
+    )
 
 def Delete(id_cliente:int):
-    cursor = conexion.OpenConexion()
-    cursor.execute( "DELETE FROM clientes Where id_cliente = ?",
-        (id_cliente),)
+    cursor = conexion.conectar()
+    cursor.execute( 
+        "DELETE FROM clientes Where id_cliente = ?",
+        (id_cliente),
+    )
 
 def Read_with_Params(id_cliente:int):
-    cursor = conexion.OpenConexion()
-    cursor.execute( "SELECT * FROM clientes Where id_cliente = ?",
-        (id_cliente),)
+    cursor = conexion.conectar()
+    cursor.execute(
+                "SELECT * FROM clientes WHERE id_cliente = ?",(id_cliente,)
+            )
     query = cursor.fetchone()
     return query
