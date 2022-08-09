@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import sqlite3
 from typing import List
-import hashlib  # importa la libreria hashlib:wq
+import hashlib  # importa la libreria hashlib
 
 
 
