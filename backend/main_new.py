@@ -1,122 +1,73 @@
-#http Bearer
-
-from urllib import response
-from fastapi import FastAPI, HTTPException, status, Depends, Security, Request
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from fastapi.middleware.cors import CORSMiddleware
-
-from fastapi.responses import RedirectResponse
-
+import databases
+import sqlalchemy
+from sqlalchemy import create_engine
+from sqlalchemy import MetaData
+from sqlalchemy import Table, Column, Integer, String
+from sqlalchemy import insert, select, update, delete 
+from fastapi import FastAPI
 from pydantic import BaseModel
+from typing import List
+DATABASE_URL = "sqlite:///clientes.db"
 
-import hashlib
+database = databases.Database(DATABASE_URL)
 
-import pyrebase
+engine = create_engine(DATABASE_URL)
 
+metadata = MetaData(engine) #DB Schema
+
+
+clientes = Table(
+    'clientes',metadata,
+    Column('id_cliente', Integer, primary_key = True),
+    Column('nombre', String, nullable = False),
+    Column('email', String, nullable = False)
+)
+
+metadata.create_all(engine)
 
 app = FastAPI()
 
+class Cliente(BaseModel):
+    id_cliente: int
+    nombre: str
+    email: str
 
-origins = ["*"
-]
+class ClienteIN(BaseModel):
+    nombre : str
+    email : str
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+class Message(BaseModel):
+    message : str
 
-firebaseConfig = {
-    "apiKey": "AIzaSyCqcAsOlCtnuCEmUIUgJJvTeHg9n2xjCg4",
-    "authDomain": "loginapirest-b1c29.firebaseapp.com",
-    "databaseURL": "https://loginapirest-b1c29-default-rtdb.firebaseio.com/",
-    "projectId": "loginapirest-b1c29",
-    "storageBucket": "loginapirest-b1c29.appspot.com",
-    "messagingSenderId": "364265836121",
-    "appId": "1:364265836121:web:09a406b3328d87323f6b48",
-    "measurementId": "G-DVS09D026Q"
-  };
-
-firebase = pyrebase.initialize_app(firebaseConfig)
-
-auth = firebase.auth()
-db = firebase.database()
+@app.get("/",)
+async def root():
+    return {"message": "SQLALchemy"}
 
 
-password_b = hashlib.md5("user".encode())
-password = password_b.hexdigest()
+@app.get("/clientes", response_model = List[Cliente])
+async def get_clientes():
+    query = select(clientes)
+    return await database.fetch_all(query)
 
-securityBasic = HTTPBasic()
-securityBearer = HTTPBearer()
+@app.get("/clientes/{id_cliente}", response_model = Cliente)
+async def get_cliente(id_cliente : int):
+    query = select(clientes).where(clientes.c.id_cliente == id_cliente)
+    return await database.fetch_one(query)
 
-class Mensaje(BaseModel):
-  token:str
+@app.post("/clientes", response_model = Message)
+async def create_cliente(cliente : ClienteIN):
+    query = insert(clientes).values(nombre = cliente.nombre, email = cliente.email)
+    await database.execute(query)
+    return {"message" : "Cliente agregado"}
 
-@app.get("/", include_in_schema=False)
-def root():
-    return RedirectResponse(url='/docs')
+@app.put("/clientes/{id_cliente}", response_model = Message)
+async def update_cliente(id_cliente : int, cliente : ClienteIN):
+    query = update(clientes).where(clientes.c.id_cliente == id_cliente).values(nombre = cliente.nombre, email = cliente.email)
+    await database.execute(query)
+    return {"message" : "Cliente Actualizado"}
 
-@app.get(
-    "/user/validate/",
-    status_code=status.HTTP_202_ACCEPTED,
-    summary="Get a token for a user",
-    description="Get a token for a user",
-    tags=["auth"],
-  )
-async def get_token(credentials: HTTPBasicCredentials = Depends(securityBasic)):
-    try:
-      user = credentials.username
-      password = credentials.password
-      user = auth.sign_in_with_email_and_password(user, password)
-      response = {
-        "token": user['idToken'],
-      }
-      return response
-    except Exception as e:
-      print(f"Error: {e}")
-      raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e)
-
-@app.get(
-  "/user/",
-  status_code=status.HTTP_202_ACCEPTED,
-  summary="Get a token for a user",
-  description="Get a token for a user",
-  tags=["auth"],
-)
-async def get_token_bearer(credentials: HTTPAuthorizationCredentials =  Depends(securityBearer)):
-    try:
-      user = auth.get_account_info(credentials.credentials)
-      uid = user['users'][0]['localId']
-      users_data = db.child("users").child(uid).get().val()
-      response = {
-        "user": users_data,
-      }
-      return response
-    except Exception as e:
-      print(f"Error: {e}")
-      raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail=e)
-
-@app.post(
-  "/user/",
-  summary="Create a new user",
-  description="Create a new user",
-  tags=["Create"])
-async def create_user(email:str,password:str,name:str):
-  try:
-    user = auth.create_user_with_email_and_password(email, password)
-    user = auth.sign_in_with_email_and_password(email, password)
-    uid = user['localId']
-    print(uid)
-    data= {
-      "nombre":name,
-      "level":"User"
-      }
-    userData = db.child("users").child(uid).set(data)
-    msg = {"token":user['idToken']}
-    return msg
-
-  except Exception as e:
-    print(f"Error: {e}")
+@app.delete("/clientes/{id_cliente}", response_model = Message)
+async def delete_cliente(id_cliente : int):
+    query = delete(clientes).where(clientes.c.id_cliente == id_cliente)
+    await database.execute(query)
+    return {"message" : "Cliente Eliminado"}
