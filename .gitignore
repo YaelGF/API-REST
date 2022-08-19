@@ -132,3 +132,5 @@ dmypy.json
 
 # Visual code
 .vscode/
+
+.clientes.db

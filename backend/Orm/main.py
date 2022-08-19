@@ -12,7 +12,6 @@ from sqlalchemy import create_engine
 from sqlalchemy import select, insert, update, delete
 from sqlalchemy import Table,Column, String, Integer
 
-
 DATABASE_URL = "sqlite:///clientes.db"
 
 database = databases.Database(DATABASE_URL)
@@ -59,20 +58,20 @@ async def get_cliente(id_cliente : int):
     query = select(clientes).where(clientes.c.id_cliente == id_cliente)
     return await database.fetch_one(query)
 
-@app.post("/clientes", response_model = Message)
-async def create_cliente(cliente : ClienteIN):
-    query = insert(clientes).values(nombre = cliente.nombre, email = cliente.email)
-    await database.execute(query)
-    return {"message" : "Cliente agregado"}
+@app.post("/clientes/", response_model = Message)
+async def add_cliente(cliente: ClienteIN):
+  query = insert(clientes).values(nombre=cliente.nombre, email=cliente.email)
+  await database.execute(query)
+  return {"msg":"Cliente Creado"}
 
 @app.put("/clientes/{id_cliente}", response_model = Message)
-async def update_cliente(id_cliente : int, cliente : ClienteIN):
-    query = update(clientes).where(clientes.c.id_cliente == id_cliente).values(nombre = cliente.nombre, email = cliente.email)
-    await database.execute(query)
-    return {"message" : "Cliente Actualizado"}
+async def put_cliente(id_cliente: int, cliente: ClienteIN):
+  query = update(clientes).where(clientes.c.id_cliente == id_cliente).values(nombre=cliente.nombre, email=cliente.email)
+  await database.execute(query)
+  return {"msg":"Cliente Actualizado"}
 
 @app.delete("/clientes/{id_cliente}", response_model = Message)
-async def delete_cliente(id_cliente : int):
-    query = delete(clientes).where(clientes.c.id_cliente == id_cliente)
-    await database.execute(query)
-    return {"message" : "Cliente Eliminado"}
+async def delete_cliente(id_cliente: int, cliente: ClienteIN):
+  query = delete(clientes).where(clientes.c.id_cliente == id_cliente)
+  await database.execute(query)
+  return {"msg":"Cliente Borrado"}
