@@ -40,7 +40,7 @@ cd ..
 ```
 
 ```
-docker run -it -v $(pwd)/code:/PaginaFastAPI --net host --name fastapy -h python fast:0.1
+docker run -it -v $(pwd)/code:/PaginaFastAPI --net host --name fastapi -h python fastapi:v1
 ```
 
 ## 4. Run Web Page

@@ -1,5 +1,5 @@
 FROM ubuntu:20.04
-LABEL description = "Tarea 2.1"
+LABEL description = "Dockerfile for building a docker image"
 RUN apt update
 RUN apt upgrade -y
 
@@ -13,9 +13,13 @@ RUN pip3 install uvicorn==0.17.6
 RUN pip3 install fastapi==0.78.0
 RUN pip3 install pytest==7.1.1
 
-RUN pip3 install SQLAlchemy==1.3.0
+RUN pip3 install SQLAlchemy
+
+RUN pip3 install psycopg2
 
 RUN pip3 install databases==0.6.0
+
+RUN pip3 install pyrebase
 
 RUN pip3 install web.py==0.62
 

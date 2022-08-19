@@ -1,20 +1,25 @@
-import databases
-import sqlalchemy
-from sqlalchemy import create_engine
-from sqlalchemy import MetaData
-from sqlalchemy import Table, Column, Integer, String
-from sqlalchemy import insert, select, update, delete 
+import databases # Permite ejecutar y formatear las consultas
+
+from typing import List
+
 from fastapi import FastAPI
 from pydantic import BaseModel
-from typing import List
+
+from starlette.responses import RedirectResponse
+
+from sqlalchemy import MetaData
+from sqlalchemy import create_engine
+from sqlalchemy import select, insert, update, delete
+from sqlalchemy import Table,Column, String, Integer
+
+
 DATABASE_URL = "sqlite:///clientes.db"
 
 database = databases.Database(DATABASE_URL)
 
+metadata = MetaData() # DB Schema
+
 engine = create_engine(DATABASE_URL)
-
-metadata = MetaData(engine) #DB Schema
-
 
 clientes = Table(
     'clientes',metadata,
@@ -41,7 +46,7 @@ class Message(BaseModel):
 
 @app.get("/",)
 async def root():
-    return {"message": "SQLALchemy"}
+    return RedirectResponse(url='/docs')
 
 
 @app.get("/clientes", response_model = List[Cliente])
