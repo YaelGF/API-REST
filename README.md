@@ -5,7 +5,7 @@
 ### Comando para ejecutar el proyecto estando en raiz
 
 ``` shell
-    uvicorn code.main:app --reload 
+    uvicorn Api-Rest.main:app --reload 
 ```
 
 ### Comando para ejecutar los test unitarios desde raiz
