@@ -20,6 +20,7 @@ origins = [
     "http://127.0.0.1:8000",
     "http://0.0.0.0:8080",
     "http://localhost:8080",
+    "*"
 ]
 
 app.add_middleware(
@@ -88,7 +89,7 @@ async def get_clientes(offsent: int = 0, limit: int = 10,credentials: HTTPAuthor
     token = credentials.credentials
     level=get_level(token)
     if level == 'User':
-        with sqlite3.connect("backend_Good/sql/clientes.sqlite") as connection:
+        with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
             cursor.execute(
@@ -121,7 +122,7 @@ async def get_cliente(id_cliente: int, credentials: HTTPAuthorizationCredentials
     token = credentials.credentials
     level=get_level(token)
     if level == 'User':
-        with sqlite3.connect("backend_Good/sql/clientes.sqlite") as connection:
+        with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
             cursor.execute(
@@ -154,7 +155,7 @@ async def create_cliente(cliente: Schemas.UsuarioNew, credentials: HTTPAuthoriza
     token = credentials.credentials
     level=get_level(token)
     if level == "Admin":
-        with sqlite3.connect("backend_Good/sql/clientes.sqlite") as connection:
+        with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
             cursor.execute(
@@ -182,7 +183,7 @@ async def update_cliente(id_cliente: int, cliente: Schemas.UsuarioUpdate, creden
     token = credentials.credentials
     level=get_level(token)
     if level == "Admin":
-        with sqlite3.connect("backend_Good/sql/clientes.sqlite") as connection:
+        with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
             cursor.execute(
@@ -210,7 +211,7 @@ async def delete_cliente(id_cliente: int, credentials: HTTPAuthorizationCredenti
     token = credentials.credentials
     level=get_level(token)
     if level == "Admin":
-        with sqlite3.connect("backend_Good/sql/clientes.sqlite") as connection:
+        with sqlite3.connect("backend/sql/clientes.sqlite") as connection:
             connection.row_factory = sqlite3.Row
             cursor = connection.cursor()
             cursor.execute(
